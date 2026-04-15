@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiPost } from '../services/api';
 
 export default function Login() {
+  const { user } = useAuth();
+  if (user) return <Navigate to={user.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard'} replace />;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -72,7 +74,11 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
+        <div className="mt-3 text-right">
+          <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">Forgot password?</Link>
+        </div>
+
+        <div className="mt-4 text-center text-sm text-gray-500">
           Don't have an account?{' '}
           <Link to="/register/patient" className="text-blue-600 hover:underline font-medium">
             Sign up as Patient
