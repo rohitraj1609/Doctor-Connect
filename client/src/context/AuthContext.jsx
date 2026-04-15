@@ -17,8 +17,10 @@ export function AuthProvider({ children }) {
         });
         if (res.ok) {
           const data = await res.json();
-          setAccessToken(data.data.accessToken);
-          setUser(data.data.user);
+          if (data.data?.accessToken && data.data?.user) {
+            setAccessToken(data.data.accessToken);
+            setUser(data.data.user);
+          }
         }
       } catch {
         // No valid session
