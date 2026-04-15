@@ -38,8 +38,8 @@ export async function searchDoctors(req, res, next) {
     if (city) filter['address.city'] = { $regex: city, $options: 'i' };
 
     if (q && q.trim()) {
-      // Use regex search (works without text index on discriminator)
-      const regex = new RegExp(q.trim(), 'i');
+      const escaped = q.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(escaped, 'i');
       filter.$or = [
         { firstName: regex },
         { lastName: regex },
@@ -96,6 +96,17 @@ export async function updateMyProfile(req, res, next) {
     const updates = {};
     for (const key of allowed) {
       if (req.body[key] !== undefined) updates[key] = req.body[key];
+    }
+
+    // Validate numeric fields
+    if (updates.consultationFee !== undefined && (typeof updates.consultationFee !== 'number' || updates.consultationFee < 0)) {
+      return api.error(res, 'Consultation fee must be a non-negative number', 400);
+    }
+    if (updates.experience !== undefined && (typeof updates.experience !== 'number' || updates.experience < 0 || updates.experience > 80)) {
+      return api.error(res, 'Experience must be between 0 and 80 years', 400);
+    }
+    if (updates.bio !== undefined && updates.bio.length > 500) {
+      return api.error(res, 'Bio must be under 500 characters', 400);
     }
 
     const doctor = await User.findByIdAndUpdate(req.user.userId, updates, { new: true })
