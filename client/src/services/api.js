@@ -1,6 +1,7 @@
 const BASE_URL = '/api/v1';
 
 let accessToken = null;
+let isRefreshing = false;
 
 export function setAccessToken(token) {
   accessToken = token;
@@ -22,21 +23,24 @@ export async function apiFetch(endpoint, options = {}) {
     credentials: 'include',
   });
 
-  if (res.status === 401 && accessToken) {
-    // Try refreshing the token
-    const refreshRes = await fetch(`${BASE_URL}/auth/refresh-token`, {
-      method: 'POST',
-      credentials: 'include',
-    });
-    if (refreshRes.ok) {
-      const data = await refreshRes.json();
-      accessToken = data.data.accessToken;
-      headers['Authorization'] = `Bearer ${accessToken}`;
-      return fetch(`${BASE_URL}${endpoint}`, { ...options, headers, credentials: 'include' });
+  if (res.status === 401 && accessToken && !isRefreshing) {
+    isRefreshing = true;
+    try {
+      const refreshRes = await fetch(`${BASE_URL}/auth/refresh-token`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (refreshRes.ok) {
+        const data = await refreshRes.json();
+        accessToken = data.data.accessToken;
+        headers['Authorization'] = `Bearer ${accessToken}`;
+        return fetch(`${BASE_URL}${endpoint}`, { ...options, headers, credentials: 'include' });
+      }
+      accessToken = null;
+      window.location.href = '/login';
+    } finally {
+      isRefreshing = false;
     }
-    // Refresh failed - clear token
-    accessToken = null;
-    window.location.href = '/login';
     return res;
   }
 
