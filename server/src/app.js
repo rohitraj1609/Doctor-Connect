@@ -20,7 +20,10 @@ const app = express();
 
 // Middleware
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({
+  origin: [config.clientUrl, /\.ngrok-free\.app$/],
+  credentials: true,
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -57,7 +60,7 @@ app.use('/api/v1/consultations', consultationRoutes);
 // Serve React client build in production/sharing mode
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const clientDist = join(__dirname, '../../client/dist');
-app.use(express.static(clientDist));
+app.use(express.static(clientDist, { dotfiles: 'deny' }));
 app.get('/{*path}', (req, res, next) => {
   if (req.path.startsWith('/api/') || req.path.startsWith('/socket.io/')) return next();
   res.sendFile(join(clientDist, 'index.html'));
