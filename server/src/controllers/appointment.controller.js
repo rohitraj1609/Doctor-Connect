@@ -44,8 +44,10 @@ export async function getMyAppointments(req, res, next) {
 
     if (req.user.role === 'patient') {
       filter.patientId = req.user.userId;
-    } else {
+    } else if (req.user.role === 'doctor') {
       filter.doctorId = req.user.userId;
+    } else {
+      return api.error(res, 'Invalid role', 403);
     }
 
     if (status) filter.status = status;
