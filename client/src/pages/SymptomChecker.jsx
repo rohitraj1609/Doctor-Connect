@@ -55,15 +55,16 @@ export default function SymptomChecker() {
     if (!text) return;
 
     // Add user message
-    setMessages(prev => [...prev, { role: 'user', text }]);
+    setMessages(prev => [...prev, { id: Date.now(), role: 'user', text }]);
     setInput('');
     setSuggestedDoctors([]);
 
     // Analyze with conversation context
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       const previousDiagnosis = getLastDiagnosis();
       const result = analyzeSymptoms(text, previousDiagnosis);
       setMessages(prev => [...prev, {
+        id: Date.now(),
         role: 'assistant',
         text: result.message,
         type: result.found ? 'diagnosis' : 'clarify',
@@ -74,6 +75,7 @@ export default function SymptomChecker() {
         fetchDoctors(result.primarySpecialization);
       }
     }, 500);
+    return () => clearTimeout(timer);
   }
 
   function handleKeyDown(e) {
@@ -124,7 +126,7 @@ export default function SymptomChecker() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gray-50">
         {messages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+          <div key={msg.id || i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
               msg.role === 'user'
                 ? 'bg-blue-600 text-white rounded-br-md'
