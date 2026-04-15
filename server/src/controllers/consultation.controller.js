@@ -128,11 +128,17 @@ export async function getMyConsultations(req, res, next) {
       ? { doctorId: req.user.userId }
       : { patientId: req.user.userId };
 
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (Number(page) - 1) * Number(limit);
+
     const consultations = await Consultation.find(filter)
       .populate('doctorId', 'firstName lastName specialization')
       .populate('patientId', 'firstName lastName')
       .populate('appointmentId', 'date startTime endTime reason')
-      .sort({ startedAt: -1 });
+      .sort({ startedAt: -1 })
+      .skip(skip)
+      .limit(Number(limit))
+      .lean();
 
     return api.success(res, { consultations });
   } catch (err) {
