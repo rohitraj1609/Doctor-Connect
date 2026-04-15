@@ -22,13 +22,8 @@ export default function VerifyOtp() {
     try {
       const data = await apiPost('/auth/verify-otp', { target, type, code, purpose });
       if (!data.success) { setError(data.message); return; }
-      setSuccess('Verified successfully!');
-      if (type === 'email' && purpose === 'registration') {
-        // Prompt phone verification next
-        setTimeout(() => navigate(`/verify?type=phone&target=&purpose=registration`), 1500);
-      } else {
-        setTimeout(() => navigate('/login'), 1500);
-      }
+      setSuccess('Verified successfully! Redirecting to login...');
+      setTimeout(() => navigate('/login'), 1500);
     } catch {
       setError('Network error. Please try again.');
     } finally {
