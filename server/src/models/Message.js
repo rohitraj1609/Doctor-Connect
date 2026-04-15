@@ -7,8 +7,7 @@ const messageSchema = new mongoose.Schema({
   content: { type: String, required: true },
   type: { type: String, enum: ['text', 'system'], default: 'text' },
   readAt: { type: Date, default: null },
-  createdAt: { type: Date, default: Date.now },
-});
+}, { timestamps: true });
 
 messageSchema.index({ consultationId: 1, createdAt: 1 });
 
