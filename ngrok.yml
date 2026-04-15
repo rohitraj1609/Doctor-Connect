@@ -1,0 +1,11 @@
+version: 2
+tunnels:
+  client:
+    addr: 5173
+    proto: http
+  api:
+    addr: 5000
+    proto: http
+  voice:
+    addr: 5001
+    proto: http
