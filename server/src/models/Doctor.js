@@ -14,16 +14,13 @@ const doctorFields = new mongoose.Schema({
     state: String,
     zip: String,
   },
-  isApproved: { type: Boolean, default: true },
+  isApproved: { type: Boolean, default: false },
   rating: { type: Number, default: 0 },
   totalReviews: { type: Number, default: 0 },
 });
 
 doctorFields.index({ specialization: 1, 'address.city': 1 });
-doctorFields.index(
-  { firstName: 'text', lastName: 'text', specialization: 'text', hospital: 'text' },
-  { name: 'doctor_text_search' }
-);
+// Text index removed — doesn't work with discriminators. Regex search used in controller instead.
 
 const Doctor = User.discriminator('doctor', doctorFields);
 export default Doctor;
