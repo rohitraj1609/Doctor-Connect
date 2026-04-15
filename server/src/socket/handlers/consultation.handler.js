@@ -15,7 +15,6 @@ export function registerConsultationHandlers(io, socket) {
       socket.join(consultationId);
       socket.consultationId = consultationId;
 
-      // System message
       io.to(consultationId).emit('user-joined', {
         userId: socket.user.userId,
         role: socket.user.role,
@@ -29,11 +28,24 @@ export function registerConsultationHandlers(io, socket) {
     try {
       if (!content?.trim()) return;
 
+      // Verify sender is a participant
+      const consultation = await Consultation.findById(consultationId);
+      if (!consultation) return socket.emit('error', { message: 'Consultation not found' });
+
+      const userId = socket.user.userId;
+      if (String(consultation.doctorId) !== userId && String(consultation.patientId) !== userId) {
+        return socket.emit('error', { message: 'Not authorized to send messages here' });
+      }
+
+      if (consultation.status === 'completed') {
+        return socket.emit('error', { message: 'Consultation has ended' });
+      }
+
       const message = await Message.create({
         consultationId,
         senderId: socket.user.userId,
         senderRole: socket.user.role,
-        content: content.trim(),
+        content: content.trim().slice(0, 5000), // Max message length
         type: 'text',
       });
 
@@ -70,6 +82,7 @@ export function registerConsultationHandlers(io, socket) {
       userId: socket.user.userId,
       role: socket.user.role,
     });
+    delete socket.consultationId;
   });
 
   socket.on('disconnect', () => {
@@ -78,6 +91,7 @@ export function registerConsultationHandlers(io, socket) {
         userId: socket.user.userId,
         role: socket.user.role,
       });
+      delete socket.consultationId;
     }
   });
 }
