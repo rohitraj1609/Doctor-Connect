@@ -81,7 +81,7 @@ export default function ConsultationChat() {
   }, [messages]);
 
   const sendMessage = useCallback(() => {
-    if (!input.trim() || !socket) return;
+    if (!input.trim() || !socket?.connected) return;
     socket.emit('send-message', { consultationId: id, content: input.trim() });
     setInput('');
     socket.emit('typing-stop', { consultationId: id });
