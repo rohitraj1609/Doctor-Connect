@@ -1,5 +1,6 @@
 import Consultation from '../../models/Consultation.js';
 import Message from '../../models/Message.js';
+import { CONSULTATION_STATUS } from '../../utils/constants.js';
 
 export function registerConsultationHandlers(io, socket) {
   socket.on('join-consultation', async ({ consultationId }) => {
@@ -37,7 +38,7 @@ export function registerConsultationHandlers(io, socket) {
         return socket.emit('error', { message: 'Not authorized to send messages here' });
       }
 
-      if (consultation.status === 'completed') {
+      if (consultation.status === CONSULTATION_STATUS.COMPLETED) {
         return socket.emit('error', { message: 'Consultation has ended' });
       }
 
