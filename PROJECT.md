@@ -161,8 +161,8 @@ docconnect/
 PORT=5000
 NODE_ENV=development
 MONGO_URI=mongodb://localhost:27017/docconnect
-JWT_ACCESS_SECRET=<secret>
-JWT_REFRESH_SECRET=<secret>
+JWT_ACCESS_SECRET=<your-secret>
+JWT_REFRESH_SECRET=<your-secret>
 JWT_ACCESS_EXPIRY=15m
 JWT_REFRESH_EXPIRY=7d
 RESEND_API_KEY=<your-resend-api-key>
