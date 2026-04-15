@@ -33,6 +33,7 @@ export default function ManageSlots() {
       const data = await apiPost('/slots/bulk', form);
       if (data.success) {
         setMessage(`${data.data.inserted} slots created`);
+        setTimeout(() => setMessage(''), 3000);
         fetchSlots();
         setForm({ ...form, date: '' });
       } else {
