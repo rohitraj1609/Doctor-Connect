@@ -31,7 +31,7 @@ export default function RescheduleAppointment() {
   useEffect(() => {
     if (!selectedDate || !appointment) return;
     async function loadSlots() {
-      const doctorId = appointment.doctorId._id || appointment.doctorId;
+      const doctorId = appointment.doctorId?._id || appointment.doctorId;
       const data = await apiGet(`/slots/doctor/${doctorId}/available?date=${selectedDate}`);
       if (data.success) setSlots(data.data.slots);
       setSelectedSlot(null);
