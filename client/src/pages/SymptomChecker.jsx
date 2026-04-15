@@ -84,11 +84,23 @@ export default function SymptomChecker() {
   }
 
   function renderMarkdown(text) {
-    // Simple markdown: **bold** and *italic* and newlines
-    return text
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/\n/g, '<br/>');
+    // Safe rendering — no dangerouslySetInnerHTML
+    const parts = [];
+    let key = 0;
+    for (const line of text.split('\n')) {
+      if (parts.length > 0) parts.push(<br key={`br-${key++}`} />);
+      const tokens = line.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+      for (const token of tokens) {
+        if (token.startsWith('**') && token.endsWith('**')) {
+          parts.push(<strong key={key++}>{token.slice(2, -2)}</strong>);
+        } else if (token.startsWith('*') && token.endsWith('*')) {
+          parts.push(<em key={key++}>{token.slice(1, -1)}</em>);
+        } else {
+          parts.push(<span key={key++}>{token}</span>);
+        }
+      }
+    }
+    return parts;
   }
 
   return (
@@ -120,7 +132,7 @@ export default function SymptomChecker() {
                   ? 'bg-green-50 border border-green-200 text-gray-800 rounded-bl-md'
                   : 'bg-white border border-gray-200 text-gray-800 rounded-bl-md'
             }`}>
-              <div dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.text) }} />
+              <div>{renderMarkdown(msg.text)}</div>
 
               {/* Show condition badges for diagnosis */}
               {msg.data?.found && msg.data.conditions && (
