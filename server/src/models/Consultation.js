@@ -16,7 +16,7 @@ const consultationSchema = new mongoose.Schema({
   prescription: { type: String },
   diagnosis: { type: String },
   followUpDate: { type: Date },
-});
+}, { timestamps: true });
 
 const Consultation = mongoose.model('Consultation', consultationSchema);
 export default Consultation;
