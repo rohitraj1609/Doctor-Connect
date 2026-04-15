@@ -14,8 +14,7 @@ const timeSlotSchema = new mongoose.Schema({
   },
   appointmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Appointment', default: null },
   timezone: { type: String, default: 'Asia/Kolkata' },
-  createdAt: { type: Date, default: Date.now },
-});
+}, { timestamps: true });
 
 timeSlotSchema.index({ doctorId: 1, date: 1, startTime: 1 }, { unique: true });
 timeSlotSchema.index({ doctorId: 1, status: 1, date: 1 });
