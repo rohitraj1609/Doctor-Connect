@@ -23,6 +23,7 @@ import ConsultationHistory from './pages/ConsultationHistory';
 import BookAppointment from './pages/BookAppointment';
 import RescheduleAppointment from './pages/RescheduleAppointment';
 import SymptomChecker from './pages/SymptomChecker';
+import ForgotPassword from './pages/ForgotPassword';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
             <Route path="/register/patient" element={<RegisterPatient />} />
             <Route path="/register/doctor" element={<RegisterDoctor />} />
             <Route path="/verify" element={<VerifyOtp />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
             {/* Patient */}
             <Route path="/symptom-checker" element={
