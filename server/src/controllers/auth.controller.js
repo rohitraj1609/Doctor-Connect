@@ -243,7 +243,7 @@ export async function resetPassword(req, res, next) {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return api.error(res, 'User not found', 404);
+      return api.error(res, 'Password reset failed', 400);
     }
 
     user.passwordHash = await bcrypt.hash(newPassword, 12);
