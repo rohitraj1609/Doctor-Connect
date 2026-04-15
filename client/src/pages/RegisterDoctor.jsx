@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { apiPost } from '../services/api';
 import { SPECIALIZATIONS } from '../utils/constants';
 
 export default function RegisterDoctor() {
+  const { user } = useAuth();
+  if (user) return <Navigate to="/" replace />;
   const navigate = useNavigate();
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '',
