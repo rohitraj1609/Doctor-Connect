@@ -39,7 +39,7 @@ export default function DoctorDashboard() {
       <p className="text-gray-500 mb-8">Your practice at a glance</p>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 text-center">
           <p className="text-3xl font-bold text-blue-600">{loading ? '-' : stats.todayCount}</p>
           <p className="text-sm text-gray-500 mt-1">Today</p>
